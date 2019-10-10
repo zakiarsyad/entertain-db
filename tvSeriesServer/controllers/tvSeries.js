@@ -1,49 +1,38 @@
 
-
-const axios = require('axios')
 const TvSeries = require('../models/tvSeries')
-const tv_series_key = process.env.TV_SERIES_KEY
 
 class TvSeriesController {
-    static getAllTvSeries(req, res, next) {
-        axios.get(`https://api.themoviedb.org/3/discover/tv?api_key=${tv_series_key}&language=en-US&sort_by=popularity.desc&page=1&timezone=America%2FNew_York&include_null_first_air_dates=false`)
-            .then(({ data }) => {
-                res.status(200).json({ tvSeries: data.results })
-            })
-            .catch(next)
-    }
-
-    static getTvSeries(req, res, next) {
-        const tv_series_id = req.params.id
-
-        axios.get(`https://api.themoviedb.org/3/tv/${tv_series_id}?api_key=${tv_series_key}&language=en-US`)
-            .then(({ data }) => {
-                res.status(200).json({ tvSeries: data })
-            })
-            .catch(next)
-    }
-
-    static getFav(req, res, next) {
+    static findAll(req, res, next) {
         TvSeries.find()
             .then(tvSeries => {
-                res.status(200).json({ tvSeries })
+                res.status(200).json(tvSeries)
             })
             .catch(next)
     }
 
-    static createfav(req, res, next) {
+    static findById(req, res, next) {
+        const tv_series_id = req.params.id
+
+        TvSeries.findById({ _id: tv_series_id })
+            .then(tvSeries => {
+                res.status(200).json(tvSeries)
+            })
+            .catch(next)
+    }
+
+    static create(req, res, next) {
         const { title, overview, poster_path, popularity, tags, status } = req.body
 
         TvSeries.create({
             title, overview, poster_path, popularity, tags, status
         })
             .then(tvSeries => {
-                res.status(201).json({ tvSeries })
+                res.status(201).json(tvSeries)
             })
             .catch(next)
     }
 
-    static updateFav(req, res, next) {
+    static update(req, res, next) {
         const tv_series_id = req.params.id
         const { title, overview, poster_path, popularity, tags, status } = req.body
 
@@ -59,12 +48,12 @@ class TvSeriesController {
                 return tvSeries.save()
             })
             .then(tvSeries => {
-                res.status(200).json({ tvSeries })
+                res.status(200).json(tvSeries)
             })
             .catch(next)
     }
 
-    static deleteFav(req, res, next) {
+    static delete(req, res, next) {
         const tv_series_id = req.params.id
 
         TvSeries.findById(tv_series_id)
@@ -72,7 +61,7 @@ class TvSeriesController {
                 return tvSeries.delete()
             })
             .then(tvSeries => {
-                res.status(200).json({ tvSeries })
+                res.status(200).json(tvSeries)
             })
             .catch(next)
     }

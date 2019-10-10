@@ -1,6 +1,7 @@
 
 const router = require('express').Router()
-const TvSeriesController = require('../controllers/tvSeries')
+const tvSeriesRouter = require('./tvSeries')
+const tagRouter = require('./tags')
 
 router.get('/', (req, res) => {
     res.status(200).json({
@@ -8,11 +9,7 @@ router.get('/', (req, res) => {
     })
 })
 
-router.get('/tv-series', TvSeriesController.getAllTvSeries)
-router.get('/tv-series/:id', TvSeriesController.getTvSeries)
-router.get('/tv-series/fav', TvSeriesController.getFav)
-router.post('/tv-series', TvSeriesController.createfav)
-router.patch('/tv-series/:id', TvSeriesController.updateFav)
-router.delete('/tv-series/:id', TvSeriesController.deleteFav)
+router.use('/tvseries', tvSeriesRouter)
+router.use('/tags', tagRouter)
 
 module.exports = router

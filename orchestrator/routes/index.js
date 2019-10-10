@@ -1,6 +1,7 @@
 
 const router = require('express').Router()
-
+const movieRouter = require('./movies')
+const tvSeriesRouter = require('./tvSeries')
 
 router.get('/', (req, res) => {
     res.status(200).json({
@@ -8,7 +9,7 @@ router.get('/', (req, res) => {
     })
 })
 
-router.get('/movies', OrchestraController.getAllMovie)
-router.get('/tv-series', OrchestraController.getAllTvSeries)
+router.use('/movies', movieRouter)
+router.use('/tvseries', tvSeriesRouter)
 
 module.exports = router
