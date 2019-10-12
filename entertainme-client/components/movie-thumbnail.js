@@ -2,19 +2,24 @@ import React from 'react'
 import {
     Text,
     TouchableOpacity,
-    StyleSheet
+    StyleSheet,
+    Image
 } from 'react-native'
 
 export default MovieThumbnail = (props) => {
-    const linkToDetail = () => {
-        props.navigation.navigate('Detail')
+    const movie = props.movie
+
+    const linkToDetail = (data) => {
+        props.navigation.navigate('Detail', { movie: data })
     }
 
     return (
         <TouchableOpacity
-            onPress={linkToDetail}
+            onPress={() => linkToDetail(movie)}
             style={styles.container}>
-            <Text>SINGLE MOVIE</Text>
+            <Image
+                style={{ width: '100%', height: '100%', resizeMode: 'cover', borderRadius: 10 }}
+                source={{ uri: movie.poster_path }}/>
         </TouchableOpacity>
     )
 }

@@ -3,26 +3,30 @@ import {
     View,
     Text,
     TouchableOpacity,
-    StyleSheet
+    StyleSheet,
+    Image
 } from 'react-native'
 
 export default MovieItem = (props) => {
-    const linkToDetail = () => {
-        props.navigation.navigate('Detail')
+    const movie = props.movie
+
+    const linkToDetail = (data) => {
+        props.navigation.navigate('Detail', { movie: data })
     }
 
     return (
         <TouchableOpacity
-            onPress={linkToDetail}
+            onPress={() => linkToDetail(movie)}
             style={styles.container}>
             <View style={styles.image}>
-                <Text>FOTO</Text>
+                <Image
+                    style={{ width: '100%', height: '100%', resizeMode: 'cover', borderRadius: 5 }}
+                    source={{ uri: movie.poster_path }} />
             </View>
             <View style={styles.details}>
-                <Text>title</Text>
-                <Text>popularity</Text>
-                <Text>status</Text>
-                <Text>release date</Text>
+                <Text style={{ fontWeight: 'bold', fontSize: 18 }}>{movie.title}</Text>
+                <Text>{movie.status}</Text>
+                <Text>release : {movie.release_date}</Text>
             </View>
         </TouchableOpacity>
     )

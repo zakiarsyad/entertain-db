@@ -15,9 +15,6 @@ export default Navbar = () => {
             <TouchableOpacity>
                 <Text style={styles.label}>Popular</Text>
             </TouchableOpacity>
-            <TouchableOpacity>
-                <Text style={styles.label}>Showing Now</Text>
-            </TouchableOpacity>
         </View>
     )
 }

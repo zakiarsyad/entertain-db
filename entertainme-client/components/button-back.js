@@ -24,6 +24,6 @@ const styles = StyleSheet.create({
         marginTop: 20, width: '100%', alignItems: 'flex-start'
     },
     label: {
-        borderWidth: 1, borderRadius: 20, paddingHorizontal: 10, paddingVertical: 1 
+        borderWidth: 1, borderRadius: 20, paddingHorizontal: 10, paddingVertical: 1, borderColor: 'black', color: 'black', backgroundColor: 'white'
     }
 });

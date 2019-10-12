@@ -3,51 +3,88 @@ import {
     View,
     Text,
     StyleSheet,
-    TouchableOpacity
+    TouchableOpacity,
+    Image,
+    ScrollView
 } from 'react-native'
 import Constants from 'expo-constants'
+import { gql } from "apollo-boost"
+import { useMutation } from '@apollo/react-hooks'
+
+const DELETE_MOVIE = gql`
+    mutation deleteMovie($_id: String) {
+        deleteMovie(_id: $_id) {
+            _id
+        }
+    }
+`
 
 export default Detail = (props) => {
+    const movie = props.navigation.getParam('movie')
+    const [deleteMovie, { data }] = useMutation(DELETE_MOVIE)
+
+    const handleEdit = () => {
+        props.navigation.navigate('FormMovie', { movie: movie })
+    }
+
+    const handleDelete = async () => {
+        await deleteMovie({ variables: { _id: movie._id } })
+        props.navigation.navigate('Movie')
+    }
+
     return (
         <View style={styles.container}>
-            <View style={{ flex: 0.45, width: '100%', justifyContent: 'flex-start', backgroundColor: '#f8f8f8', paddingHorizontal: 15 }}>
+            <Image
+                style={{ width: '100%', height: 300, position: 'absolute' }}
+                source={{ uri: movie.backdrop_path }} />
+
+            <View style={styles.backbutton}>
                 <ButtonBack navigation={props.navigation} />
             </View>
 
-            <View style={{ flex: 0.55, backgroundColor: '#fff' }}>
-                <TouchableOpacity style={{ position: 'absolute', right:30, top: 30, justifyContent:'flex-end', flexDirection: 'row' }}>
-                    <Text style={{ marginRight: 10, borderWidth: 1, borderRadius: 20, paddingHorizontal: 10, paddingVertical: 1 }}>EDIT</Text>
-                    <Text style={{ borderWidth: 1, borderRadius: 20, paddingHorizontal: 10, paddingVertical: 1 }}>DELETE</Text>
-                </TouchableOpacity>
-
-                <View style={{ height: 175, width: 120, borderRadius: 10, backgroundColor: 'red', position: 'absolute', left: 30, top: -90, justifyContent: 'center', alignItems: 'center' }}>
-                    <Text>INI GAMBAR</Text>
-                </View>
-
-                <View style={{ marginTop: 110, paddingHorizontal: 30, alignItems: 'flex-start' }}>
-                    <Text style={{ fontWeight: 'bold', fontSize: 25 }}>title</Text>
-                    <Text style={{ fontWeight: 'bold' }}>release date</Text>
-                </View>
-
-                <View style={{ marginHorizontal: 30, marginVertical: 20 }}>
-                    <Text>During the 1980s, a failed stand-up comedian is driven insane and turns to a life of crime and chaos in Gotham City while becoming an infamous psychopathic crime figure.</Text>
-                </View>
-
-                <View style={{ paddingHorizontal: 30, flexDirection: 'row', justifyContent: 'space-around' }}>
-                    <View style={{ alignItems: 'center' }}>
-                        <Text style={{ fontSize: 13, fontWeight: 'bold' }}>7.6</Text>
-                        <Text style={{ fontWeight: 'bold', fontSize: 13 }}>VOTE AVG</Text>
+            <ScrollView>
+                <View style={{ width: '100%', height: 300 }}></View>
+                <View style={styles.detail}>
+                    <View style={styles.button}>
+                        <TouchableOpacity onPress={handleEdit}>
+                            <Text style={[styles.label, { marginRight: 10 }]}>EDIT</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={handleDelete}>
+                            <Text style={styles.label}>DELETE</Text>
+                        </TouchableOpacity>
                     </View>
-                    <View style={{ alignItems: 'center', borderLeftWidth: 2, borderRightWidth: 2, paddingHorizontal: 25 }}>
-                        <Text style={{ fontSize: 13, fontWeight: 'bold' }}>All ages</Text>
-                        <Text style={{ fontWeight: 'bold', fontSize: 13 }}>STATUS</Text>
+
+                    <View style={styles.poster}>
+                        <Image
+                            style={{ width: '100%', height: '100%', borderRadius: 10 }}
+                            source={{ uri: movie.poster_path }} />
                     </View>
-                    <View style={{ alignItems: 'center' }}>
-                        <Text style={{ fontSize: 13, fontWeight: 'bold' }}>204.357</Text>
-                        <Text style={{ fontWeight: 'bold', fontSize: 13 }}>POPULARITY</Text>
+
+                    <View style={styles.title}>
+                        <Text style={{ fontWeight: 'bold', fontSize: 25 }}>{movie.title}</Text>
+                        <Text style={{ fontWeight: 'bold' }}>{movie.release_date}</Text>
+                    </View>
+
+                    <View style={{ marginVertical: 20 }}>
+                        <Text>{movie.overview}</Text>
+                    </View>
+
+                    <View style={styles.scoring}>
+                        <View style={{ alignItems: 'center' }}>
+                            <Text style={styles.scoringlabel}>{movie.vote_average}</Text>
+                            <Text style={styles.scoringlabel}>VOTE AVG</Text>
+                        </View>
+                        <View style={{ alignItems: 'center', borderLeftWidth: 2, borderRightWidth: 2, paddingHorizontal: 25 }}>
+                            <Text style={styles.scoringlabel}>{movie.status}</Text>
+                            <Text style={styles.scoringlabel}>STATUS</Text>
+                        </View>
+                        <View style={{ alignItems: 'center' }}>
+                            <Text style={styles.scoringlabel}>{movie.popularity}</Text>
+                            <Text style={styles.scoringlabel}>POPULARITY</Text>
+                        </View>
                     </View>
                 </View>
-            </View>
+            </ScrollView>
         </View>
     )
 }
@@ -57,6 +94,30 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'flex-start',
         alignItems: 'center',
-        marginTop: Constants.statusBarHeight
+        marginTop: Constants.statusBarHeight,
+    },
+    backbutton: {
+        position: 'absolute', left: 15, top: 10, zIndex: 1
+    },
+    detail: {
+        backgroundColor: '#fff', paddingHorizontal: 30, paddingBottom: 30
+    },
+    button: {
+        position: 'absolute', right: 30, top: 10, justifyContent: 'flex-end', flexDirection: 'row'
+    },
+    label: {
+        borderWidth: 1, borderRadius: 20, paddingHorizontal: 10, paddingVertical: 1
+    },
+    poster: {
+        height: 175, width: 120, borderRadius: 10, backgroundColor: 'red', position: 'absolute', left: 30, top: -90, justifyContent: 'center', alignItems: 'center'
+    },
+    title: {
+        marginTop: 110, alignItems: 'flex-start'
+    },
+    scoring: {
+        flexDirection: 'row', justifyContent: 'space-around'
+    },
+    scoringlabel: {
+        fontSize: 13, fontWeight: 'bold'
     }
 });

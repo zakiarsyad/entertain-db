@@ -5,9 +5,9 @@ import {
     StyleSheet
 } from 'react-native'
 
-export default ButtonSubmit = () => {
+export default ButtonSubmit = (props) => {
     return (
-        <TouchableOpacity>
+        <TouchableOpacity onPress={props.handleSave}>
             <Text style={styles.label}>CREATE</Text>
         </TouchableOpacity>
     )

@@ -18,14 +18,14 @@ export default Home = (props) => {
 
     return (
         <View style={styles.container}>
-            <View style={{ flex: 0.5, backgroundColor: 'red', width: '100%', alignItems: 'center', justifyContent: 'center' }}>
+            <View style={styles.area}>
                 <TouchableOpacity onPress={linkToMovie}>
-                    <Text style={{ backgroundColor: 'blue', borderRadius: 20, paddingHorizontal: 20, paddingVertical: 5, color: 'white' }}>MOVIES</Text>
+                    <Text style={styles.label}>MOVIES</Text>
                 </TouchableOpacity>
             </View>
-            <View style={{ flex: 0.5, backgroundColor: 'blue', width: '100%', alignItems: 'center', justifyContent: 'center' }}>
+            <View style={styles.area}>
                 <TouchableOpacity onPress={linkToTv}>
-                    <Text style={{ backgroundColor: 'red', borderRadius: 20, paddingHorizontal: 20, paddingVertical: 5, color: 'white' }}>TV SERIEX</Text>
+                    <Text style={styles.label}>TV SERIES</Text>
                 </TouchableOpacity>
             </View>
         </View>
@@ -38,5 +38,11 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         marginTop: Constants.statusBarHeight
+    },
+    area: {
+        flex: 0.5, width: '100%', alignItems: 'center', justifyContent: 'center'
+    },
+    label: {
+        borderRadius: 20, paddingHorizontal: 20, paddingVertical: 5, borderWidth: 1
     }
 });
