@@ -4,6 +4,7 @@ import {
     View,
     Text,
     ScrollView,
+    ActivityIndicator
 } from 'react-native'
 import Constants from 'expo-constants'
 import { gql } from "apollo-boost"
@@ -34,25 +35,41 @@ const MOVIES = gql`
     }
 `
 
-
 export default Movie = (props) => {
     const { loading, error, data } = useQuery(MOVIES)
 
     // const { loading, error, data } = useSubscription(gql`
     //     subscription {
-    //         moviesx
+    //         moviesx {
+    //             tags
+    //             _id
+    //             title
+    //             overview
+    //             poster_path
+    //             popularity
+    //             status
+    //             backdrop_path
+    //             vote_average
+    //             release_date
+    //             createdAt
+    //         }
     //     }
     // `)
 
-    if (loading) return <Text>Loading...</Text>
+    if (loading) return (
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <ActivityIndicator size="large" color="#0000ff" />
+        </View>
+    )
     if (error) return <Text>Error :(</Text>
 
     const linkToHome = () => {
         props.navigation.navigate('Home')
     }
 
-    const thumbnail = data.movies
-    // thumbnail.length = 5
+    // console.log(data.moviesx)
+
+    const thumbnail = [...data.movies]
     function compare(a, b) {
         let comparison = 0;
         if (a.createdAt < b.createdAt) {
@@ -63,6 +80,8 @@ export default Movie = (props) => {
         return comparison;
     }
     thumbnail.sort(compare)
+    thumbnail.length = 5
+    data.movies.sort(compare)
 
     return (
         <View style={styles.container}>

@@ -15,7 +15,10 @@ class MovieController {
                         overview: movie.overview,
                         poster_path: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
                         popularity: movie.popularity,
-                        status: movie.adult ? 'adult' : 'all ages'
+                        status: movie.adult ? 'adult' : 'all ages',
+                        backdrop_path: `https://image.tmdb.org/t/p/w500${movie.backdrop_path}`,
+                        vote_average: movie.vote_average,
+                        release_date: movie.release_date
                     }
 
                     promises.push(Movie.create(singleMovie))
@@ -45,10 +48,10 @@ class MovieController {
     }
     
     static create(req, res, next) {
-        const { title, overview, poster_path, popularity, tags, status } = req.body
+        const { title, overview, poster_path, popularity, tags, status, backdrop_path, vote_average, release_date } = req.body
         
         Movie.create({
-            title, overview, poster_path, popularity, tags, status
+            title, overview, poster_path, popularity, tags, status, backdrop_path, vote_average, release_date
         })
             .then(movie => {
                 res.status(201).json(movie)
@@ -58,7 +61,7 @@ class MovieController {
 
     static update(req, res, next) {
         const movie_id = req.params.id
-        const { title, overview, poster_path, popularity, tags, status } = req.body
+        const { title, overview, poster_path, popularity, tags, status, backdrop_path, vote_average, release_date } = req.body
         
         Movie.findById(movie_id)
         .then(movie => {
@@ -68,6 +71,9 @@ class MovieController {
             if (popularity) movie.popularity = popularity
             if (tags) movie.tags = tags
             if (status) movie.status = status
+            if (backdrop_path) movie.backdrop_path = backdrop_path
+            if (vote_average) movie.vote_average = vote_average
+            if (release_date) movie.release_date = release_date
             
             return movie.save()
             })

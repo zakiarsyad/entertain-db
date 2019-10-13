@@ -7,7 +7,7 @@ import {
 
 export default ButtonSubmit = (props) => {
     return (
-        <TouchableOpacity onPress={props.handleSave}>
+        <TouchableOpacity onPress={props.handleCreate}>
             <Text style={styles.label}>CREATE</Text>
         </TouchableOpacity>
     )

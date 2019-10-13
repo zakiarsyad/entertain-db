@@ -6,12 +6,15 @@ const movieSchema = new Schema({
     title: String,
     overview: String,
     poster_path: String,
-    popularity: Number,
+    popularity: String,
     tags: [{
         type: Schema.Types.ObjectId,
         ref: "Tag"
     }],
-    status: String
+    status: String,
+    backdrop_path: String,
+    vote_average: String,
+    release_date: String
 }, { timestamps: true } )
 
 module.exports = mongoose.model('Movie', movieSchema)
