@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { 
     StyleSheet,
     View,
@@ -8,14 +8,14 @@ import {
 } from 'react-native'
 import Constants from 'expo-constants'
 import { gql } from "apollo-boost"
-import { useQuery, useSubscription } from '@apollo/react-hooks'
+import { useQuery, useLazyQuery, useSubscription } from '@apollo/react-hooks'
 
-import ButtonHome from '../components/button-home'
-import Search from '../components/search'
-import Navbar from '../components/navbar'
-import MovieThumbnail from '../components/movie-thumbnail'
-import MovieItem from '../components/movie-item'
-import ButtonAdd from '../components/button-add'
+import ButtonHome from '../components/Movies/button-home'
+import Search from '../components/Movies/search'
+import Navbar from '../components/Movies/navbar'
+import MovieThumbnail from '../components/Movies/movie-thumbnail'
+import MovieItem from '../components/Movies/movie-item'
+import ButtonAdd from '../components/Movies/button-add'
 
 const MOVIES = gql`
     {
@@ -32,15 +32,30 @@ const MOVIES = gql`
     }
 `
 
+const MOVIES_SUB = gql`
+  subscription movieUpdated{
+    movieUpdated {
+        _id
+    }
+  }
+`
+
+
 
 export default Movie = (props) => {
     const { loading, error, data } = useQuery(MOVIES)
+    const { data: dataSub } = useSubscription(MOVIES_SUB)
+    const [loadMovie, { called, loading: loadingLazy, data: dataLazy }] = useLazyQuery(MOVIES)
 
-    // const { loading, error, data } = useSubscription(gql`
-    //     subscription {
-    //         moviesx
-    //     }
-    // `)
+    const [query, setQuery] = useState('')
+
+    const movies = dataLazy
+        ? dataLazy.movies.filter(el => el.title.toLowerCase().includes(query.toLowerCase()))
+        : []
+
+    useEffect(() => {
+        loadMovie()
+    }, [dataSub])
 
     if (loading) return (
         <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
@@ -53,19 +68,23 @@ export default Movie = (props) => {
         props.navigation.navigate('Home')
     }
 
-    const thumbnail = [...data.movies]
-    function compare(a, b) {
-        let comparison = 0;
-        if (a.createdAt < b.createdAt) {
-            comparison = 1;
-        } else if (a.createdAt > b.createdAt) {
-            comparison = -1;
-        }
-        return comparison;
+    const handleInput = query => {
+        setQuery(query)
     }
-    thumbnail.sort(compare)
-    thumbnail.length = 5
-    data.movies.sort(compare)
+
+    // const thumbnail = [...movies]
+    // function compare(a, b) {
+    //     let comparison = 0;
+    //     if (a.createdAt < b.createdAt) {
+    //         comparison = 1;
+    //     } else if (a.createdAt > b.createdAt) {
+    //         comparison = -1;
+    //     }
+    //     return comparison;
+    // }
+    // thumbnail.sort(compare)
+    // thumbnail.length = 5
+    // movies.sort(compare)
 
     return (
         <View style={styles.container}>
@@ -75,7 +94,7 @@ export default Movie = (props) => {
                         linkToHome={linkToHome}
                         label={'Home'}/>
                 </View>
-                <Search />
+                <Search handleInput={handleInput} query={query}/>
             </View>
             <View style={{ flex: 0.85 }}>
                 <ScrollView>
@@ -87,8 +106,8 @@ export default Movie = (props) => {
                             showsHorizontalScrollIndicator={false}
                             style={{ marginVertical: 20 }}>
                             <View style={{ width: 10 }}></View>
-                            {thumbnail &&
-                                thumbnail.map((movie, i) => (
+                            {movies.length > 0 &&
+                                movies.map((movie, i) => (
                                     <MovieThumbnail
                                         key={i}
                                         movie= {movie}
@@ -101,8 +120,8 @@ export default Movie = (props) => {
 
                     <View style={styles.allmovies}>
                         <Text style={{ marginTop: 25, fontWeight: 'bold', fontSize: 18 }}>All Movies</Text>
-                        {data &&
-                            data.movies.map((movie, i) => (
+                        {movies.length > 0 &&
+                            movies.map((movie, i) => (
                                 <MovieItem
                                     key={i}
                                     movie={movie}

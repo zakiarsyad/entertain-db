@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {
     StyleSheet,
     View,
@@ -8,14 +8,14 @@ import {
 } from 'react-native'
 import Constants from 'expo-constants'
 import { gql } from "apollo-boost"
-import { useQuery, useSubscription } from '@apollo/react-hooks'
+import { useQuery, useLazyQuery, useSubscription } from '@apollo/react-hooks'
 
-import ButtonHome from '../components/button-home'
-import Search from '../components/search'
-import Navbar from '../components/navbar'
-import MovieThumbnail from '../components/movie-thumbnail'
-import MovieItem from '../components/movie-item'
-import ButtonAdd from '../components/button-add'
+import ButtonHome from '../components/TvSeries/button-home'
+import Search from '../components/TvSeries/search'
+import Navbar from '../components/TvSeries/navbar'
+import TvThumbnail from '../components/TvSeries/movie-thumbnail'
+import TvItem from '../components/TvSeries/movie-item'
+import ButtonAdd from '../components/TvSeries/button-add'
 
 const TV = gql`
     {
@@ -32,15 +32,28 @@ const TV = gql`
     }
 `
 
+const TV_SUB = gql`
+  subscription tvseriesUpdated{
+    tvseriesUpdated {
+        _id
+    }
+  }
+`
 
-export default Movie = (props) => {
+export default Tv = (props) => {
     const { loading, error, data } = useQuery(TV)
+    const { data: dataSub } = useSubscription(TV_SUB)
+    const [loadTv, { called, loading: loadingLazy, data: dataLazy }] = useLazyQuery(TV)
 
-    // const { loading, error, data } = useSubscription(gql`
-    //     subscription {
-    //         moviesx
-    //     }
-    // `)
+    const [query, setQuery] = useState('')
+
+    const tvseries = dataLazy
+        ? dataLazy.tvseries.filter(el => el.title.toLowerCase().includes(query.toLowerCase()))
+        : []
+
+    useEffect(() => {
+        loadTv()
+    }, [dataSub])
 
     if (loading) return (
         <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
@@ -53,19 +66,23 @@ export default Movie = (props) => {
         props.navigation.navigate('Home')
     }
 
-    const thumbnail = [...data.tvseries]
-    function compare(a, b) {
-        let comparison = 0;
-        if (a.createdAt < b.createdAt) {
-            comparison = 1;
-        } else if (a.createdAt > b.createdAt) {
-            comparison = -1;
-        }
-        return comparison;
+    const handleInput = query => {
+        setQuery(query)
     }
-    thumbnail.sort(compare)
-    thumbnail.length = 5
-    data.tvseries.sort(compare)
+
+    // const thumbnail = [...movies]
+    // function compare(a, b) {
+    //     let comparison = 0;
+    //     if (a.createdAt < b.createdAt) {
+    //         comparison = 1;
+    //     } else if (a.createdAt > b.createdAt) {
+    //         comparison = -1;
+    //     }
+    //     return comparison;
+    // }
+    // thumbnail.sort(compare)
+    // thumbnail.length = 5
+    // movies.sort(compare)
 
     return (
         <View style={styles.container}>
@@ -75,7 +92,7 @@ export default Movie = (props) => {
                         linkToHome={linkToHome}
                         label={'Home'} />
                 </View>
-                <Search />
+                <Search handleInput={handleInput} query={query} />
             </View>
             <View style={{ flex: 0.85 }}>
                 <ScrollView>
@@ -87,11 +104,11 @@ export default Movie = (props) => {
                             showsHorizontalScrollIndicator={false}
                             style={{ marginVertical: 20 }}>
                             <View style={{ width: 10 }}></View>
-                            {thumbnail &&
-                                thumbnail.map((movie, i) => (
-                                    <MovieThumbnail
+                            {tvseries.length > 0 &&
+                                tvseries.map((tv, i) => (
+                                    <TvThumbnail
                                         key={i}
-                                        movie={movie}
+                                        tv={tv}
                                         navigation={props.navigation} />
                                 ))
                             }
@@ -101,11 +118,11 @@ export default Movie = (props) => {
 
                     <View style={styles.allmovies}>
                         <Text style={{ marginTop: 25, fontWeight: 'bold', fontSize: 18 }}>All Movies</Text>
-                        {data &&
-                            data.tvseries.map((movie, i) => (
-                                <MovieItem
+                        {tvseries.length > 0 &&
+                            tvseries.map((tv, i) => (
+                                <TvItem
                                     key={i}
-                                    movie={movie}
+                                    tv={tv}
                                     navigation={props.navigation} />
                             ))
                         }

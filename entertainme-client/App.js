@@ -8,8 +8,10 @@ import { ApolloProvider } from '@apollo/react-hooks';
 import Home from './screens/Home'
 import TvSeries from './screens/TvSeries'
 import Movie from './screens/Movies'
-import Detail from './screens/Detail'
-import FormMovie from './screens/FormMovie'
+import DetailMovie from './screens/Movies/Detail'
+import FormMovie from './screens/Movies/FormMovie'
+import DetailTv from './screens/TvSeries/Detail'
+import FormTv from './screens/TvSeries/FormTv'
 import store from './store/'
 // import client from './graphql'
 
@@ -20,10 +22,22 @@ const client = new ApolloClient({
 
 const MovieNavigator = createStackNavigator({
   Movie,
-  Detail,
+  DetailMovie,
   FormMovie
 }, {
-    initialRouteName: 'Movie',
+  initialRouteName: 'Movie',
+  headerMode: 'none',
+  navigationOptions: {
+    headerVisible: false,
+  }
+})
+
+const TvNavigator = createStackNavigator({
+  TvSeries,
+  DetailTv,
+  FormTv
+}, {
+  initialRouteName: 'TvSeries',
   headerMode: 'none',
   navigationOptions: {
     headerVisible: false,
@@ -33,7 +47,7 @@ const MovieNavigator = createStackNavigator({
 const RootNavigation = createAppContainer(createSwitchNavigator({
   Home,
   Movies : MovieNavigator,
-  TvSeries
+  TvSeries : TvNavigator
 }, { initialRouteName: 'Home'}))
 
 export default function App() {

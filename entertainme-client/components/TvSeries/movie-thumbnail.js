@@ -6,20 +6,20 @@ import {
     Image
 } from 'react-native'
 
-export default MovieThumbnail = (props) => {
-    const movie = props.movie
+export default TvThumbnail = (props) => {
+    const tv = props.tv
 
     const linkToDetail = (data) => {
-        props.navigation.navigate('Detail', { movie: data })
+        props.navigation.navigate('DetailTv', { tv: data })
     }
 
     return (
         <TouchableOpacity
-            onPress={() => linkToDetail(movie)}
+            onPress={() => linkToDetail(tv)}
             style={styles.container}>
             <Image
                 style={{ width: '100%', height: '100%', resizeMode: 'cover', borderRadius: 10 }}
-                source={{ uri: movie.poster_path }}/>
+                source={{ uri: tv.poster_path }}/>
         </TouchableOpacity>
     )
 }

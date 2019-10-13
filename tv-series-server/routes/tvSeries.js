@@ -2,6 +2,7 @@
 const router = require('express').Router()
 const TvSeriesController = require('../controllers/tvSeries')
 
+router.get('/seed', TvSeriesController.seed)
 router.get('/', TvSeriesController.findAll)
 router.get('/:id', TvSeriesController.findById)
 router.post('/', TvSeriesController.create)

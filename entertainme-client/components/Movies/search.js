@@ -4,9 +4,12 @@ import {
     StyleSheet
 } from 'react-native'
 
-export default Search = () => {
+export default Search = (props) => {
     return (
-        <TextInput style={styles.input} placeholder="find yours here" />
+        <TextInput
+            value={props.query}
+            onChangeText={props.handleInput}
+            style={styles.input} placeholder="find yours here" />
     )
 }
 

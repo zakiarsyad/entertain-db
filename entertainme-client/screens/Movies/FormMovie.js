@@ -9,9 +9,9 @@ import Constants from 'expo-constants'
 import { gql } from "apollo-boost"
 import { useMutation } from '@apollo/react-hooks'
 
-import ButtonBack from '../components/button-back'
-import ButtonSubmit from '../components/button-submit'
-import ButtonEdit from '../components/button-edit'
+import ButtonBack from '../../components/Movies/button-back'
+import ButtonSubmit from '../../components/Movies/button-submit'
+import ButtonEdit from '../../components/Movies/button-edit'
 
 const CREATE_MOVIE = gql`
     mutation createMovie ($tags: [String], $title: String, $overview: String, $poster_path: String, $popularity: String, $status: String) {

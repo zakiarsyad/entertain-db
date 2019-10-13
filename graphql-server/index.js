@@ -1,12 +1,20 @@
-const { ApolloServer, gql, makeExecutableSchema } = require('apollo-server')
+const { ApolloServer, gql, makeExecutableSchema, PubSub } = require('apollo-server')
 
 const MoviesAPI = require('./datasources/movies')
 const TvSeriesAPI = require('./datasources/tvSeries')
+
+const pubsub = new PubSub()
 
 const typeDefs = gql`
     type Query {
         movies: [Movie]
         tvseries: [TvSeries]
+    }
+
+    type Subscription {
+        movieUpdated: Movie
+
+        tvseriesUpdated: TvSeries
     }
 
     type Mutation {
@@ -61,36 +69,52 @@ const resolvers = {
         }
     },
 
+    Subscription: {
+        movieUpdated: {
+            subscribe: () => pubsub.asyncIterator('movieUpdated')
+        },
+
+        tvseriesUpdated: {
+            subscribe: () => pubsub.asyncIterator('tvseriesUpdated')
+        }
+    },
+
     Mutation: {
         createMovie: (parent, args, context) => {
             console.log(args)
             const { dataSources: { movies } } = context
-            return movies.create(args)
+            movies.create(args)
+            return pubsub.publish('movieUpdated', { movieUpdated: args })
         },
 
         updateMovie: (parent, args, context) => {
             const { dataSources: { movies } } = context
-            return movies.update(args)
+            movies.update(args)
+            return pubsub.publish('movieUpdated', { movieUpdated: args })
         },
 
         deleteMovie: (parent, args, context) => {
             const { dataSources: { movies } } = context
-            return movies.destroy(args)
+            movies.destroy(args)
+            return pubsub.publish('movieUpdated', { movieUpdated: args })
         },
 
         createTvSeries: (parent, args, context) => {
             const { dataSources: { tvseries } } = context
-            return tvseries.create(args)
+            tvseries.create(args)
+            return pubsub.publish('tvseriesUpdated', { tvseriesUpdated: args })
         },
 
         updateTvSeries: (parent, args, context) => {
             const { dataSources: { tvseries } } = context
-            return tvseries.update(args)
+            tvseries.update(args)
+            return pubsub.publish('tvseriesUpdated', { tvseriesUpdated: args })
         },
 
         deleteTvSeries: (parent, args, context) => {
             const { dataSources: { tvseries } } = context
-            return tvseries.destroy(args)
+            tvseries.destroy(args)
+            return pubsub.publish('tvseriesUpdated', { tvseriesUpdated: args })
         }
     }
 }
