@@ -36,7 +36,7 @@ export default Detail = (props) => {
         <View style={styles.container}>
             <Image
                 style={{ width: '100%', height: 300, position: 'absolute' }}
-                source={{ uri: movie.backdrop_path }} />
+                source={{ uri: movie.poster_path }} />
 
             <View style={styles.backbutton}>
                 <ButtonBack navigation={props.navigation} />
@@ -70,11 +70,7 @@ export default Detail = (props) => {
                     </View>
 
                     <View style={styles.scoring}>
-                        <View style={{ alignItems: 'center' }}>
-                            <Text style={styles.scoringlabel}>{movie.vote_average}</Text>
-                            <Text style={styles.scoringlabel}>VOTE AVG</Text>
-                        </View>
-                        <View style={{ alignItems: 'center', borderLeftWidth: 2, borderRightWidth: 2, paddingHorizontal: 25 }}>
+                        <View style={{ alignItems: 'center', borderRightWidth: 2, paddingRight: 50 }}>
                             <Text style={styles.scoringlabel}>{movie.status}</Text>
                             <Text style={styles.scoringlabel}>STATUS</Text>
                         </View>

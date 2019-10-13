@@ -27,37 +27,23 @@ const MOVIES = gql`
             poster_path
             popularity
             status
-            backdrop_path
-            vote_average
-            release_date
             createdAt
         }
     }
 `
+
 
 export default Movie = (props) => {
     const { loading, error, data } = useQuery(MOVIES)
 
     // const { loading, error, data } = useSubscription(gql`
     //     subscription {
-    //         moviesx {
-    //             tags
-    //             _id
-    //             title
-    //             overview
-    //             poster_path
-    //             popularity
-    //             status
-    //             backdrop_path
-    //             vote_average
-    //             release_date
-    //             createdAt
-    //         }
+    //         moviesx
     //     }
     // `)
 
     if (loading) return (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
             <ActivityIndicator size="large" color="#0000ff" />
         </View>
     )
@@ -67,14 +53,12 @@ export default Movie = (props) => {
         props.navigation.navigate('Home')
     }
 
-    // console.log(data.moviesx)
-
     const thumbnail = [...data.movies]
     function compare(a, b) {
         let comparison = 0;
         if (a.createdAt < b.createdAt) {
             comparison = 1;
-        } else if (a.createdAt >  b.createdAt) {
+        } else if (a.createdAt > b.createdAt) {
             comparison = -1;
         }
         return comparison;

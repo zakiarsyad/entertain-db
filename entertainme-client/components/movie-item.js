@@ -26,7 +26,7 @@ export default MovieItem = (props) => {
             <View style={styles.details}>
                 <Text style={{ fontWeight: 'bold', fontSize: 18 }}>{movie.title}</Text>
                 <Text>{movie.status}</Text>
-                <Text>release : {movie.release_date}</Text>
+                <Text>{movie.popularity}</Text>
             </View>
         </TouchableOpacity>
     )

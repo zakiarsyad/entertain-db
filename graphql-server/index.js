@@ -1,6 +1,5 @@
-const { ApolloServer, gql, makeExecutableSchema, PubSub } = require('apollo-server')
+const { ApolloServer, gql, makeExecutableSchema } = require('apollo-server')
 
-const pubsub = new PubSub()
 const MoviesAPI = require('./datasources/movies')
 const TvSeriesAPI = require('./datasources/tvSeries')
 
@@ -10,20 +9,16 @@ const typeDefs = gql`
         tvseries: [TvSeries]
     }
 
-    # type Subscription {
-    #     moviesx: [Movie]
-    # }
-
     type Mutation {
-        createMovie ( tags: [String], title: String, overview: String, poster_path: String, popularity: String, status: String, backdrop_path: String, vote_average: String, release_date: String ): Movie
+        createMovie ( tags: [String], title: String, overview: String, poster_path: String, popularity: String, status: String ): Movie
 
-        updateMovie ( _id: String, tags: [String], title: String, overview: String, poster_path: String, popularity: String, status: String, backdrop_path: String, vote_average: String, release_date: String ): Movie
+        updateMovie ( _id: String, tags: [String], title: String, overview: String, poster_path: String, popularity: String, status: String ): Movie
 
         deleteMovie ( _id: String ): Movie
 
-        createTvSeries ( tags: [String], title: String, overview: String, poster_path: String, popularity: String, status: String, backdrop_path: String, vote_average: String, release_date: String ): TvSeries
+        createTvSeries ( tags: [String], title: String, overview: String, poster_path: String, popularity: String, status: String ): TvSeries
 
-        updateTvSeries ( _id: String, tags: [String], title: String, overview: String, poster_path: String, popularity: String, status: String, backdrop_path: String, vote_average: String, release_date: String ): TvSeries
+        updateTvSeries ( _id: String, tags: [String], title: String, overview: String, poster_path: String, popularity: String, status: String ): TvSeries
 
         deleteTvSeries ( _id: String ): TvSeries
     }
@@ -36,10 +31,8 @@ const typeDefs = gql`
         poster_path: String
         popularity: String
         status: String
-        backdrop_path: String
-        vote_average: String
-        release_date: String
         createdAt: String
+        updatedAt: String
     }
 
     type TvSeries {
@@ -68,14 +61,9 @@ const resolvers = {
         }
     },
 
-    // Subscription: {
-    //     moviesx: {
-    //         subscribe: () => pubsub.asyncIterator(['XXX'])
-    //     }
-    // },
-
     Mutation: {
         createMovie: (parent, args, context) => {
+            console.log(args)
             const { dataSources: { movies } } = context
             return movies.create(args)
         },

@@ -11,14 +11,14 @@ import Movie from './screens/Movies'
 import Detail from './screens/Detail'
 import FormMovie from './screens/FormMovie'
 import store from './store/'
-import client from './graphql'
+// import client from './graphql'
 
-// const client = new ApolloClient({
-//   // uri: 'http://localhost:4000',
-//   uri: 'http://192.168.0.4:4000',
-// });
+const client = new ApolloClient({
+  // uri: 'http://localhost:4000',
+  uri: 'http://192.168.0.4:4000',
+});
 
-const StackNavigator = createStackNavigator({
+const MovieNavigator = createStackNavigator({
   Movie,
   Detail,
   FormMovie
@@ -32,9 +32,9 @@ const StackNavigator = createStackNavigator({
 
 const RootNavigation = createAppContainer(createSwitchNavigator({
   Home,
-  Movies : StackNavigator,
+  Movies : MovieNavigator,
   TvSeries
-}, { initialRouteName: 'Movies'}))
+}, { initialRouteName: 'Home'}))
 
 export default function App() {
   return (
