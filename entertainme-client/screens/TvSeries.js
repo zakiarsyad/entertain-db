@@ -47,9 +47,15 @@ export default Tv = (props) => {
 
     const [query, setQuery] = useState('')
 
-    const tvseries = dataLazy
-        ? dataLazy.tvseries.filter(el => el.title.toLowerCase().includes(query.toLowerCase()))
-        : []
+    let tvseries = []
+
+    if (data) tvseries = data.tvseries
+
+    if (dataLazy) {
+        tvseries = dataLazy
+            ? dataLazy.tvseries.filter(el => el.title.toLowerCase().includes(query.toLowerCase()))
+            : []
+    }
 
     useEffect(() => {
         loadTv()
@@ -70,19 +76,19 @@ export default Tv = (props) => {
         setQuery(query)
     }
 
-    // const thumbnail = [...movies]
-    // function compare(a, b) {
-    //     let comparison = 0;
-    //     if (a.createdAt < b.createdAt) {
-    //         comparison = 1;
-    //     } else if (a.createdAt > b.createdAt) {
-    //         comparison = -1;
-    //     }
-    //     return comparison;
-    // }
-    // thumbnail.sort(compare)
-    // thumbnail.length = 5
-    // movies.sort(compare)
+    const thumbnail = [...tvseries]
+    function compare(a, b) {
+        let comparison = 0;
+        if (a.createdAt < b.createdAt) {
+            comparison = 1;
+        } else if (a.createdAt > b.createdAt) {
+            comparison = -1;
+        }
+        return comparison;
+    }
+    thumbnail.sort(compare)
+    thumbnail.length = 5
+    tvseries.sort(compare)
 
     return (
         <View style={styles.container}>
@@ -104,8 +110,8 @@ export default Tv = (props) => {
                             showsHorizontalScrollIndicator={false}
                             style={{ marginVertical: 20 }}>
                             <View style={{ width: 10 }}></View>
-                            {tvseries.length > 0 &&
-                                tvseries.map((tv, i) => (
+                            {thumbnail &&
+                                thumbnail.map((tv, i) => (
                                     <TvThumbnail
                                         key={i}
                                         tv={tv}

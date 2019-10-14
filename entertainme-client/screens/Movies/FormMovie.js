@@ -29,10 +29,25 @@ const UPDATE_MOVIE = gql`
     }
 `
 
+const MOVIES = gql`
+    {
+        movies {
+            tags
+            _id
+            title
+            overview
+            poster_path
+            popularity
+            status
+            createdAt
+        }
+    }
+`
+
 export default FormMovie = (props) => {
     const movie = props.navigation.getParam('movie')
-    const [createMovie, { newdata }] = useMutation(CREATE_MOVIE)
-    const [updateMovie, { updateddata }] = useMutation(UPDATE_MOVIE)
+    const [createMovie, { newdata }] = useMutation(CREATE_MOVIE, { refetchQueries: [{ query: MOVIES }]})
+    const [updateMovie, { updateddata }] = useMutation(UPDATE_MOVIE, { refetchQueries: [{ query: MOVIES }] })
     const [title, setTitle] = useState('')
     const [overview, setOverview] = useState('')
     const [poster_path, setPoster_path] = useState('')
@@ -50,14 +65,11 @@ export default FormMovie = (props) => {
     }, [])
 
     const handleCreate = async  () => {
-        alert('save')
-        console.log({ title, overview, poster_path, popularity, status });
         await createMovie({ variables: { title: title, overview: overview, poster_path: poster_path, popularity: popularity, status: status } })
         props.navigation.navigate('Movie')
     }
 
     const handleEdit = async () => {
-        alert('edit')
         await updateMovie({ variables: { _id: movie._id, title: title, overview: overview, poster_path: poster_path, popularity: popularity, status: status } })
         props.navigation.navigate('Movie')
     } 

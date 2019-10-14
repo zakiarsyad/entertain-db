@@ -29,10 +29,25 @@ const UPDATE_TV = gql`
     }
 `
 
+const TV = gql`
+    {
+        tvseries {
+            tags
+            _id
+            title
+            overview
+            poster_path
+            popularity
+            status
+            createdAt
+        }
+    }
+`
+
 export default FormTv = (props) => {
     const tv = props.navigation.getParam('tv')
-    const [createTvSeries, { newdata }] = useMutation(CREATE_TV)
-    const [updateTvSeries, { updateddata }] = useMutation(UPDATE_TV)
+    const [createTvSeries, { newdata }] = useMutation(CREATE_TV, { refetchQueries: [{ query: TV }]})
+    const [updateTvSeries, { updateddata }] = useMutation(UPDATE_TV, { refetchQueries: [{ query: TV }]}) 
     const [title, setTitle] = useState('')
     const [overview, setOverview] = useState('')
     const [poster_path, setPoster_path] = useState('')
@@ -49,7 +64,8 @@ export default FormTv = (props) => {
         }
     }, [])
 
-    const handleCreate = async  () => {
+    const handleCreate = async () => {
+        console.log('masuk');
         await createTvSeries({ variables: { title: title, overview: overview, poster_path: poster_path, popularity: popularity, status: status } })
         props.navigation.navigate('TvSeries')
     }

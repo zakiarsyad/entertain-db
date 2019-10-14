@@ -11,6 +11,8 @@ import Constants from 'expo-constants'
 import { gql } from "apollo-boost"
 import { useMutation } from '@apollo/react-hooks'
 
+import ButtonBack from '../../components/Movies/button-back'
+
 const DELETE_MOVIE = gql`
     mutation deleteMovie($_id: String) {
         deleteMovie(_id: $_id) {
@@ -19,9 +21,24 @@ const DELETE_MOVIE = gql`
     }
 `
 
+const MOVIES = gql`
+    {
+        movies {
+            tags
+            _id
+            title
+            overview
+            poster_path
+            popularity
+            status
+            createdAt
+        }
+    }
+`
+
 export default Detail = (props) => {
     const movie = props.navigation.getParam('movie')
-    const [deleteMovie, { data }] = useMutation(DELETE_MOVIE)
+    const [deleteMovie, { data }] = useMutation(DELETE_MOVIE, { refetchQueries: [{ query: MOVIES }] })
 
     const handleEdit = () => {
         props.navigation.navigate('FormMovie', { movie: movie })

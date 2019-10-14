@@ -40,18 +40,22 @@ const MOVIES_SUB = gql`
   }
 `
 
-
-
 export default Movie = (props) => {
     const { loading, error, data } = useQuery(MOVIES)
     const { data: dataSub } = useSubscription(MOVIES_SUB)
     const [loadMovie, { called, loading: loadingLazy, data: dataLazy }] = useLazyQuery(MOVIES)
 
     const [query, setQuery] = useState('')
+    
+    let movies = []
 
-    const movies = dataLazy
-        ? dataLazy.movies.filter(el => el.title.toLowerCase().includes(query.toLowerCase()))
-        : []
+    if (data) movies = data.movies
+
+    if (dataLazy) {
+        movies = dataLazy
+            ? dataLazy.movies.filter(el => el.title.toLowerCase().includes(query.toLowerCase()))
+            : []
+    }
 
     useEffect(() => {
         loadMovie()
@@ -72,19 +76,19 @@ export default Movie = (props) => {
         setQuery(query)
     }
 
-    // const thumbnail = [...movies]
-    // function compare(a, b) {
-    //     let comparison = 0;
-    //     if (a.createdAt < b.createdAt) {
-    //         comparison = 1;
-    //     } else if (a.createdAt > b.createdAt) {
-    //         comparison = -1;
-    //     }
-    //     return comparison;
-    // }
-    // thumbnail.sort(compare)
-    // thumbnail.length = 5
-    // movies.sort(compare)
+    const thumbnail = [...movies]
+    function compare(a, b) {
+        let comparison = 0;
+        if (a.createdAt < b.createdAt) {
+            comparison = 1;
+        } else if (a.createdAt > b.createdAt) {
+            comparison = -1;
+        }
+        return comparison;
+    }
+    thumbnail.sort(compare)
+    thumbnail.length = 5
+    movies.sort(compare)
 
     return (
         <View style={styles.container}>
@@ -97,7 +101,7 @@ export default Movie = (props) => {
                 <Search handleInput={handleInput} query={query}/>
             </View>
             <View style={{ flex: 0.85 }}>
-                <ScrollView>
+                <ScrollView style={{ width : '100%' }}>
                     <View style={styles.banner}>
                         <Navbar />
 
@@ -106,8 +110,8 @@ export default Movie = (props) => {
                             showsHorizontalScrollIndicator={false}
                             style={{ marginVertical: 20 }}>
                             <View style={{ width: 10 }}></View>
-                            {movies.length > 0 &&
-                                movies.map((movie, i) => (
+                            {thumbnail &&
+                                thumbnail.map((movie, i) => (
                                     <MovieThumbnail
                                         key={i}
                                         movie= {movie}

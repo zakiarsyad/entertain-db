@@ -13,12 +13,12 @@ import FormMovie from './screens/Movies/FormMovie'
 import DetailTv from './screens/TvSeries/Detail'
 import FormTv from './screens/TvSeries/FormTv'
 import store from './store/'
-// import client from './graphql'
+import client from './graphql'
 
-const client = new ApolloClient({
-  // uri: 'http://localhost:4000',
-  uri: 'http://192.168.0.4:4000',
-});
+// const client = new ApolloClient({
+//   // uri: 'http://localhost:4000',
+//   uri: 'http://192.168.0.4:4000',
+// });
 
 const MovieNavigator = createStackNavigator({
   Movie,

@@ -6,8 +6,8 @@ import { split } from 'apollo-link';
 import { getMainDefinition } from 'apollo-utilities'
 import { createUploadLink } from 'apollo-upload-client'
 
-// const myUrl = 'localhost:4000'
-const myUrl = '192.168.0.4:4000'
+const myUrl = 'localhost:4000'
+// const myUrl = '192.168.0.4:4000'
 
 const client = new ApolloClient({
     link: split(

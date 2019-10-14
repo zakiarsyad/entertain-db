@@ -11,6 +11,8 @@ import Constants from 'expo-constants'
 import { gql } from "apollo-boost"
 import { useMutation } from '@apollo/react-hooks'
 
+import ButtonBack from '../../components/TvSeries/button-back'
+
 const DELETE_TV = gql`
     mutation deleteTvSeries($_id: String) {
         deleteTvSeries(_id: $_id) {
@@ -19,9 +21,24 @@ const DELETE_TV = gql`
     }
 `
 
+const TV = gql`
+    {
+        tvseries {
+            tags
+            _id
+            title
+            overview
+            poster_path
+            popularity
+            status
+            createdAt
+        }
+    }
+`
+
 export default Detail = (props) => {
     const tv = props.navigation.getParam('tv')
-    const [deleteTvSeries, { data }] = useMutation(DELETE_TV)
+    const [deleteTvSeries, { data }] = useMutation(DELETE_TV, { refetchQueries: [{ query: TV }] })
 
     const handleEdit = () => {
         props.navigation.navigate('FormTv', { tv: tv })
