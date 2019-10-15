@@ -3,7 +3,7 @@ const { RESTDataSource } = require('apollo-datasource-rest')
 class TvSeriesAPI extends RESTDataSource {
     constructor() {
         super()
-        this.baseURL = 'http://localhost:3002/'
+        this.baseURL = 'http://35.240.149.155/'
     }
 
     async findAll() {

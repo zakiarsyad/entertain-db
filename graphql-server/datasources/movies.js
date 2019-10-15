@@ -3,7 +3,7 @@ const { RESTDataSource } = require('apollo-datasource-rest')
 class MoviesAPI extends RESTDataSource {
     constructor() {
         super()
-        this.baseURL = 'http://localhost:3001/'
+        this.baseURL = 'http://34.87.29.184/'
     }
 
     async findAll() {
