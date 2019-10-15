@@ -10,8 +10,9 @@ const morgan = require('morgan')
 
 const app = express()
 const PORT = process.env.PORT || 3002
+const ATLAS = process.env.ATLAS
 
-mongoose.connect('mongodb://localhost:27017/tvSeriesDB', { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(ATLAS, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => {
         console.log(`connection success`)
     })
